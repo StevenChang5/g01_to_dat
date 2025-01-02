@@ -1,6 +1,6 @@
 # This file defines the converter of the g01 to dat file type
 import os
-from src.g01 import CrossSection
+from g01 import CrossSection
 
 class G01toDAT:
     def __init__(self,dir,name_g01,name_dat):
@@ -12,7 +12,7 @@ class G01toDAT:
         self.crosssections = []
     
     def open_g01(self):
-        self.g01 = open(os.path.join(os.path.join(self.dir, "examples"), 
+        self.g01 = open(os.path.join(os.path.join(self.dir, "g01"), 
         f"{self.name_g01}.g01"), "r")
     
     def read_g01(self):
@@ -35,14 +35,15 @@ class G01toDAT:
             self.crosssections[i].cs_number = (len(self.crosssections)-i)
     
     def write_dat(self):
-        self.dat = open(f"{self.name_dat}.dat", "w") 
+        self.dat = open(os.path.join(os.path.join(self.dir,"dat"), f"{self.name_dat}.dat"), "w") 
         self.crosssections.sort(key=lambda x:x.cs_number)
         self.dat.write("T1")
         for section in self.crosssections:
             self.dat.write(f"\nX1{section.cs_number:6}{section.num_coordinates:8}\n")
-            row_count = 0
+            column_count = 0
             for coordinate in section.coordinates:
-                if row_count == 0:
+                # First column only accurate up to tenths
+                if column_count == 0:
                     self.dat.write("GR")
                     if '.' not in coordinate[0]:
                         self.dat.write(f"{coordinate[0]}.0 ")
@@ -51,6 +52,7 @@ class G01toDAT:
                             self.dat.write(f"{coordinate[0]:>6} ")
                         else:
                             self.dat.write(f"{coordinate[0][:-2]}0 ")
+                # Other columns accuarte up to hundreths
                 else:
                     if '.' not in coordinate[0]:
                         self.dat.write(f"{coordinate[0]:>3}.00 ")
@@ -67,12 +69,12 @@ class G01toDAT:
                         self.dat.write(f"{coordinate[1]:>6}0 ")
                     else:
                         self.dat.write(f"{coordinate[1]:>7} ")
-                # self.dat.write(f"{coordinate[0]:6}   {coordinate[1]:6} ")
 
-                if row_count == 4:
+                if column_count == 4:
                     self.dat.write("\n")
-                row_count += 1
-                row_count = row_count % 5
+                column_count += 1
+                column_count = column_count % 5
+        self.dat.write("\nEJ\n\nER")
 
         self.dat.close()
             
