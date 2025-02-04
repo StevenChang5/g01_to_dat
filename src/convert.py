@@ -46,21 +46,21 @@ class G01toDAT:
                 if column_count == 0:
                     self.dat.write("GR")
                     if '.' not in coordinate[0]:
-                        self.dat.write(f"{coordinate[0]}.0 ")
+                        self.dat.write(f"{coordinate[0]:>4}.0 ")
                     else:
                         if coordinate[0][-2] == '.':
                             self.dat.write(f"{coordinate[0]:>6} ")
                         else:
-                            self.dat.write(f"{coordinate[0][:-2]}0 ")
-                # Other columns accuarte up to hundreths
+                            self.dat.write(f"{coordinate[0][:-3]:>4}.0 ")
+                # Other columns accurate up to hundreths
                 else:
                     if '.' not in coordinate[0]:
-                        self.dat.write(f"{coordinate[0]:>3}.00 ")
+                        self.dat.write(f"{coordinate[0]:>4}.00 ")
                     else:
                         if coordinate[0][-2] == '.':
-                            self.dat.write(f"{coordinate[0]:>2}0 ")
+                            self.dat.write(f"{coordinate[0]:>6}0 ")
                         else:
-                            self.dat.write(f"{coordinate[0]:>6} ")
+                            self.dat.write(f"{coordinate[0]:>7} ")
 
                 if '.' not in coordinate[1]:
                     self.dat.write(f"{coordinate[1]:>4}.00 ")
