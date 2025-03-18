@@ -37,11 +37,12 @@ class G01toDAT:
     def write_dat(self):
         self.dat = open(os.path.join(os.path.join(self.dir,"dat"), f"{self.name_dat}.dat"), "w") 
         self.crosssections.sort(key=lambda x:x.cs_number)
-        self.dat.write("T1")
+        self.dat.write("T1\n")
         for section in self.crosssections:
-            self.dat.write(f"\nX1{section.cs_number:6}{section.num_coordinates:8}\n")
+            self.dat.write(f"X1{section.cs_number:6}{section.num_coordinates:8}\n")
             column_count = 0
-            for coordinate in section.coordinates:
+            for idx in range(len(section.coordinates)):
+                coordinate = section.coordinates[idx]
                 # First column only accurate up to tenths
                 if column_count == 0:
                     self.dat.write("GR")
@@ -70,7 +71,7 @@ class G01toDAT:
                     else:
                         self.dat.write(f"{coordinate[1]:>7} ")
 
-                if column_count == 4:
+                if column_count == 4 or (idx == (len(section.coordinates)-1)):
                     self.dat.write("\n")
                 column_count += 1
                 column_count = column_count % 5
