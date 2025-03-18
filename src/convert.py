@@ -75,7 +75,7 @@ class G01toDAT:
                     self.dat.write("\n")
                 column_count += 1
                 column_count = column_count % 5
-        self.dat.write("\nEJ\n\nER")
+        self.dat.write("EJ\n\nER")
 
         self.dat.close()
             
